@@ -1,0 +1,27 @@
+{
+  "artifact_id": ".N/example-root",
+  "artifact_type": "workflow",
+  "creator": {
+    "name": "Carl Sowers"
+  },
+  "kind": "artifact",
+  "lineage": {
+    "events": [
+      {
+        "created_at": "2026-05-10T00:00:00+00:00",
+        "event_type": "originated"
+      }
+    ],
+    "parents": []
+  },
+  "neon_version": "0.1.0-alpha",
+  "origin": {
+    "created_at": "2026-05-10T00:00:00+00:00",
+    "statement": "Golden root artifact"
+  },
+  "proof": {
+    "anchors": [],
+    "hash_algorithm": "sha256"
+  },
+  "title": "Golden Root Artifact"
+}
