@@ -9,8 +9,11 @@ description = "Local-first lineage infrastructure for human-origin intelligence"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-  {name = "Carl Sowers"}
+  { name = "Carl Sowers" }
 ]
 
 [project.scripts]
-neon = "src.neon.cli:main"
+neon = "neon.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
