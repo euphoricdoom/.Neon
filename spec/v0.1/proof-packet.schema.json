@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://euphoricdoom.github.io/.Neon/spec/v0.1/proof-packet.schema.json",
+  "title": ".NeoN Proof Packet v0.1",
+  "type": "object",
+  "required": [
+    "neon_version",
+    "kind",
+    "artifact_id",
+    "artifact_file",
+    "artifact_sha256",
+    "exported_at"
+  ],
+  "properties": {
+    "neon_version": { "type": "string" },
+    "kind": { "const": "proof_packet" },
+    "artifact_id": { "type": "string" },
+    "artifact_file": { "type": "string" },
+    "artifact_sha256": { "type": "string" },
+    "exported_at": { "type": "string" },
+    "parents": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}
