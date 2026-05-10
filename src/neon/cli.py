@@ -212,6 +212,44 @@ def resolve_artifact_path(ref: str) -> Path:
     return Path(row[0])
 
 
+def index_neon_files(root: Path) -> dict[str, Path]:
+    index: dict[str, Path] = {}
+    for path in root.rglob("*.neon"):
+        try:
+            data = read_json(path)
+        except SystemExit:
+            continue
+        artifact_id = data.get("artifact_id")
+        if isinstance(artifact_id, str):
+            index[artifact_id] = path
+    return index
+
+
+def ancestry_chain(start: Path, search_root: Path) -> list[dict[str, Any]]:
+    index = index_neon_files(search_root)
+    chain: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def visit(path: Path) -> None:
+        data = read_json(path)
+        artifact_id = data.get("artifact_id")
+        if not isinstance(artifact_id, str):
+            raise SystemExit(f"Artifact missing artifact_id: {path}")
+        if artifact_id in seen:
+            return
+        seen.add(artifact_id)
+        for parent_id in data.get("lineage", {}).get("parents", []):
+            parent_path = index.get(parent_id)
+            if parent_path is None:
+                chain.append({"artifact_id": parent_id, "title": "<missing>", "path": None})
+            else:
+                visit(parent_path)
+        chain.append({"artifact_id": artifact_id, "title": data.get("title", ""), "path": str(path)})
+
+    visit(start)
+    return chain
+
+
 def cas_path(digest: str) -> Path:
     return objects_root() / digest[:2] / digest
 
@@ -377,6 +415,20 @@ def cmd_graph(args: argparse.Namespace) -> None:
         print(f"  {parent.replace('.N/', 'N_')} --> {node}")
 
 
+def cmd_lineage(args: argparse.Namespace) -> None:
+    start = Path(args.artifact)
+    if not start.exists():
+        start = resolve_artifact_path(args.artifact)
+    search_root = Path(args.root)
+    chain = ancestry_chain(start, search_root)
+    if args.format == "json":
+        print(json.dumps(chain, indent=2))
+        return
+    for index, item in enumerate(chain):
+        prefix = "->" if index else "  "
+        print(f"{prefix} {item['artifact_id']} | {item['title']}")
+
+
 def cmd_log(args: argparse.Namespace) -> None:
     data = read_json(resolve_artifact_path(args.artifact))
     print(data["title"])
@@ -449,6 +501,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("artifact")
     p.add_argument("--format", choices=["mermaid", "json"], default="mermaid")
     p.set_defaults(func=cmd_graph)
+
+    p = sub.add_parser("lineage")
+    p.add_argument("artifact")
+    p.add_argument("--root", default=".")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_lineage)
 
     p = sub.add_parser("list")
     p.set_defaults(func=cmd_list)
