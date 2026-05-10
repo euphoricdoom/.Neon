@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://euphoricdoom.github.io/.Neon/spec/v0.1/artifact.schema.json",
+  "title": ".NeoN Artifact v0.1",
+  "type": "object",
+  "required": [
+    "neon_version",
+    "kind",
+    "artifact_id",
+    "title",
+    "artifact_type",
+    "creator",
+    "origin",
+    "lineage",
+    "proof"
+  ],
+  "properties": {
+    "neon_version": { "type": "string" },
+    "kind": { "const": "artifact" },
+    "artifact_id": { "type": "string", "pattern": "^\\.N/" },
+    "title": { "type": "string" },
+    "artifact_type": { "type": "string" },
+    "creator": { "type": "object" },
+    "origin": { "type": "object" },
+    "lineage": {
+      "type": "object",
+      "required": ["parents", "events"],
+      "properties": {
+        "parents": { "type": "array", "items": { "type": "string" } },
+        "events": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": ["hash_algorithm"],
+      "properties": {
+        "hash_algorithm": { "const": "sha256" },
+        "anchors": { "type": "array" }
+      }
+    }
+  }
+}
