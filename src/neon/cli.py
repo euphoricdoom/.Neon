@@ -43,7 +43,7 @@ def init_db(conn):
 
 def init_cmd(args):
     v = vault()
-    for p in ['artifacts', 'exports', 'indexes']:
+    for p in ['artifacts', 'exports', 'indexes', 'objects/sha256']:
         (v / p).mkdir(parents=True, exist_ok=True)
     conn = connect()
     init_db(conn)
@@ -113,27 +113,63 @@ def derive_cmd(args):
 
 def export_cmd(args):
     artifact = Path(args.artifact)
+    if not artifact.exists():
+        print("not found")
+        return
     data = json.loads(artifact.read_text())
+    digest = sha256(artifact)
     out = vault() / 'exports' / (artifact.stem + '-proof')
     out.mkdir(parents=True, exist_ok=True)
+
     shutil.copy2(artifact, out / artifact.name)
+
     manifest = {
         'artifact_id': data['artifact_id'],
-        'hash': sha256(artifact),
+        'hash': digest,
         'exported_at': now()
     }
     (out / 'manifest.json').write_text(json.dumps(manifest, indent=2))
-    print(out)
 
+    (out / 'hashes.txt').write_text(digest + "  " + artifact.name + "\\n")
+
+    summary = "# .NeoN Proof Packet\\n\\nArtifact: " + data['title'] + "\\nID: " + data['artifact_id'] + "\\nHash: " + digest + "\\nExported: " + now() + "\\n"
+    (out / 'SUMMARY.md').write_text(summary)
+
+    (out / 'lineage.json').write_text(json.dumps(data.get('lineage', {}), indent=2))
+
+    verification = {
+        "status": "unverified",
+        "hash_algorithm": "sha256",
+        "expected_hash": digest
+    }
+    (out / 'verification.json').write_text(json.dumps(verification, indent=2))
+
+    print(out)
 
 def verify_cmd(args):
     target = Path(args.target)
     if target.is_dir():
-        manifest = json.loads((target / 'manifest.json').read_text())
+        manifest_path = target / 'manifest.json'
+        if not manifest_path.exists():
+            print("invalid proof packet")
+            return
+        manifest = json.loads(manifest_path.read_text())
         artifact = target / next(p.name for p in target.glob('*.neon'))
-        ok = sha256(artifact) == manifest['hash']
+        digest = sha256(artifact)
+        ok = digest == manifest['hash']
+
+        verification_path = target / 'verification.json'
+        if verification_path.exists():
+            verification = json.loads(verification_path.read_text())
+            verification['status'] = "verified" if ok else "failed"
+            verification['actual_hash'] = digest
+            verification['verified_at'] = now()
+            verification_path.write_text(json.dumps(verification, indent=2))
+
         print('verified' if ok else 'failed')
         return
+
+    # Verify a single file against the DB
     conn = connect()
     row = conn.execute('SELECT hash FROM artifacts WHERE path = ?', (str(target),)).fetchone()
     conn.close()
@@ -143,7 +179,6 @@ def verify_cmd(args):
     ok = sha256(target) == row[0]
     print('verified' if ok else 'failed')
 
-
 def graph_cmd(args):
     artifact = Path(args.artifact)
     data = json.loads(artifact.read_text())
@@ -151,6 +186,108 @@ def graph_cmd(args):
     for parent in data['lineage']['parents']:
         print(f'  {parent.replace(".N/", "N_")} --> {data["artifact_id"].replace(".N/", "N_")}')
 
+def validate_artifact(data: dict) -> list[str]:
+    errors = []
+    if data.get('kind') != 'artifact':
+        errors.append("kind must be 'artifact'")
+    if not data.get('artifact_id', '').startswith('.N/'):
+        errors.append("artifact_id must start with '.N/'")
+    if not isinstance(data.get('creator'), dict):
+        errors.append("creator must be an object")
+    if not isinstance(data.get('origin'), dict):
+        errors.append("origin must be an object")
+
+    lineage = data.get('lineage', {})
+    if not isinstance(lineage.get('parents'), list):
+        errors.append("lineage.parents must be a list")
+    if not isinstance(lineage.get('events'), list):
+        errors.append("lineage.events must be a list")
+
+    proof = data.get('proof', {})
+    if not isinstance(proof, dict):
+        errors.append("proof must be an object")
+    elif proof.get('hash_algorithm') != 'sha256':
+        errors.append("proof.hash_algorithm must be 'sha256'")
+
+    return errors
+
+def validate_cmd(args):
+    path = Path(args.path)
+    if not path.exists():
+        print("not found")
+        return
+    data = json.loads(path.read_text())
+    errors = validate_artifact(data)
+    if errors:
+        for err in errors:
+            print(f"Error: {err}")
+        import sys
+        sys.exit(1)
+    print("valid")
+
+def hash_cmd(args):
+    path = Path(args.path)
+    if not path.exists():
+        print("not found")
+        return
+    print(sha256(path))
+
+def store_cmd(args):
+    path = Path(args.path)
+    if not path.exists():
+        print("not found")
+        return
+    digest = sha256(path)
+    dest = vault() / 'objects' / 'sha256' / digest
+    if not dest.exists():
+        dest.write_bytes(path.read_bytes())
+    print(f".neon://sha256/{digest}")
+
+def fetch_cmd(args):
+    uri = args.uri
+    if not uri.startswith('.neon://sha256/'):
+        print("invalid uri")
+        return
+    digest = uri.split('/')[-1]
+    src = vault() / 'objects' / 'sha256' / digest
+    if not src.exists():
+        print("not found")
+        return
+
+    if args.out:
+        Path(args.out).write_bytes(src.read_bytes())
+        print(f"fetched to {args.out}")
+    else:
+        print(src.read_text())
+
+def log_cmd(args):
+    conn = connect()
+    rows = conn.execute('SELECT artifact_id, title, created_at FROM artifacts ORDER BY created_at DESC').fetchall()
+    conn.close()
+    for r in rows:
+        print(f"{r[2]}  {r[0]}  {r[1]}")
+
+def list_cmd(args):
+    artifacts_dir = vault() / 'artifacts'
+    if not artifacts_dir.exists():
+        return
+    for p in artifacts_dir.glob('*.neon'):
+        print(p.name)
+
+def status_cmd(args):
+    v = vault()
+    print(f"Vault: {v}")
+
+    artifacts = list((v / 'artifacts').glob('*.neon')) if (v / 'artifacts').exists() else []
+    print(f"Artifacts: {len(artifacts)}")
+
+    objects = list((v / 'objects' / 'sha256').glob('*')) if (v / 'objects' / 'sha256').exists() else []
+    print(f"Objects: {len(objects)}")
+
+    conn = connect()
+    edges = conn.execute('SELECT COUNT(*) FROM edges').fetchone()[0]
+    conn.close()
+    print(f"Edges: {edges}")
 
 def main():
     parser = argparse.ArgumentParser(prog='neon')
@@ -186,9 +323,34 @@ def main():
     p.add_argument('artifact')
     p.set_defaults(func=graph_cmd)
 
+    p = sub.add_parser('validate')
+    p.add_argument('path')
+    p.set_defaults(func=validate_cmd)
+
+    p = sub.add_parser('hash')
+    p.add_argument('path')
+    p.set_defaults(func=hash_cmd)
+
+    p = sub.add_parser('store')
+    p.add_argument('path')
+    p.set_defaults(func=store_cmd)
+
+    p = sub.add_parser('fetch')
+    p.add_argument('uri')
+    p.add_argument('--out')
+    p.set_defaults(func=fetch_cmd)
+
+    p = sub.add_parser('log')
+    p.set_defaults(func=log_cmd)
+
+    p = sub.add_parser('list')
+    p.set_defaults(func=list_cmd)
+
+    p = sub.add_parser('status')
+    p.set_defaults(func=status_cmd)
+
     args = parser.parse_args()
     args.func(args)
-
 
 if __name__ == '__main__':
     main()
