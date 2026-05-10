@@ -1,0 +1,28 @@
+{
+  "neon_version": "0.1.0",
+  "kind": "artifact",
+  "artifact_id": ".N/example/hello-world",
+  "title": "Hello World .NeoN Artifact",
+  "creator": {
+    "name": "Carl Sowers",
+    "role": "originator"
+  },
+  "origin": {
+    "created_at": "2026-05-10T00:00:00Z",
+    "human_origin_statement": "This example demonstrates the native .neon artifact format."
+  },
+  "lineage": {
+    "parents": [],
+    "events": [
+      {
+        "event_type": "created",
+        "summary": "Initial .neon example artifact."
+      }
+    ]
+  },
+  "proof": {
+    "hash_algorithm": "sha256",
+    "signature": null,
+    "anchors": []
+  }
+}
