@@ -1,0 +1,29 @@
+{
+  "neon_version": "0.1.0-alpha",
+  "kind": "artifact",
+  "artifact_id": ".N/ai-assisted-workflow",
+  "title": "AI Assisted Invoice Workflow",
+  "artifact_type": "workflow",
+  "creator": {
+    "name": "Carl Sowers"
+  },
+  "origin": {
+    "created_at": "2026-05-10T00:02:00+00:00",
+    "statement": "Invoice workflow enhanced with AI-assisted classification"
+  },
+  "lineage": {
+    "parents": [
+      ".N/invoice-workflow"
+    ],
+    "events": [
+      {
+        "event_type": "derived_from",
+        "created_at": "2026-05-10T00:02:00+00:00"
+      }
+    ]
+  },
+  "proof": {
+    "hash_algorithm": "sha256",
+    "anchors": []
+  }
+}
