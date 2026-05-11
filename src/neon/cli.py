@@ -447,7 +447,9 @@ def cmd_verify(args: argparse.Namespace) -> None:
         artifact = target / manifest["artifact_file"]
         ok = sha256_file(artifact) == manifest["artifact_sha256"]
         print("verified" if ok else "failed")
-        raise SystemExit(0 if ok else 1)
+        if not ok:
+            raise SystemExit(1)
+        return
     data = read_json(target)
     errors = validate_artifact(data)
     print("verified" if not errors else "failed")
