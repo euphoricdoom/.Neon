@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import argparse
 
-from neon.artifact import canonical_bytes, read_json
+from neon.artifact import canonical_bytes, read_json, validate_artifact
 from neon.cas import sha256_bytes
 from neon.commands.core import (
     cmd_demo,
@@ -23,6 +23,7 @@ from neon.commands.core import (
     cmd_validate,
     cmd_verify,
 )
+from neon.lifecycle import make_artifact
 from neon.symbols import SYMBOLS, symbolic_state
 
 
