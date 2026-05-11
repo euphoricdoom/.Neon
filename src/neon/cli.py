@@ -250,6 +250,34 @@ def ancestry_chain(start: Path, search_root: Path) -> list[dict[str, Any]]:
     return chain
 
 
+def descendant_chain(start: Path, search_root: Path) -> list[dict[str, Any]]:
+    index = index_neon_files(search_root)
+    start_data = read_json(start)
+    start_id = start_data.get("artifact_id")
+    if not isinstance(start_id, str):
+        raise SystemExit(f"Artifact missing artifact_id: {start}")
+    by_parent: dict[str, list[Path]] = {}
+    for path in index.values():
+        data = read_json(path)
+        for parent_id in data.get("lineage", {}).get("parents", []):
+            by_parent.setdefault(parent_id, []).append(path)
+    out: list[dict[str, Any]] = []
+    seen: set[str] = set()
+
+    def visit(parent_id: str) -> None:
+        for child_path in by_parent.get(parent_id, []):
+            child = read_json(child_path)
+            child_id = child.get("artifact_id")
+            if not isinstance(child_id, str) or child_id in seen:
+                continue
+            seen.add(child_id)
+            out.append({"artifact_id": child_id, "title": child.get("title", ""), "path": str(child_path)})
+            visit(child_id)
+
+    visit(start_id)
+    return out
+
+
 def cas_path(digest: str) -> Path:
     return objects_root() / digest[:2] / digest
 
@@ -429,6 +457,32 @@ def cmd_lineage(args: argparse.Namespace) -> None:
         print(f"{prefix} {item['artifact_id']} | {item['title']}")
 
 
+def cmd_descendants(args: argparse.Namespace) -> None:
+    start = Path(args.artifact)
+    if not start.exists():
+        start = resolve_artifact_path(args.artifact)
+    search_root = Path(args.root)
+    chain = descendant_chain(start, search_root)
+    if args.format == "json":
+        print(json.dumps(chain, indent=2))
+        return
+    for item in chain:
+        print(f"-> {item['artifact_id']} | {item['title']}")
+
+
+def cmd_symbolic_status(args: argparse.Namespace) -> None:
+    print("⚡ π.v0.2")
+    print("✓ λ.hashing")
+    print("✓ λ.cas")
+    print("✓ λ.proof-packets")
+    print("✓ λ.lineage")
+    print("✓ λ.symbolic-helpers")
+    print("◐ λ.modular-decomposition")
+    print("◐ λ.descendants")
+    print("◐ λ.golden-freeze")
+    print("✗ θ.doc-overlap")
+
+
 def cmd_log(args: argparse.Namespace) -> None:
     data = read_json(resolve_artifact_path(args.artifact))
     print(data["title"])
@@ -507,6 +561,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--root", default=".")
     p.add_argument("--format", choices=["text", "json"], default="text")
     p.set_defaults(func=cmd_lineage)
+
+    p = sub.add_parser("descendants")
+    p.add_argument("artifact")
+    p.add_argument("--root", default=".")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_descendants)
+
+    p = sub.add_parser("symbolic-status")
+    p.set_defaults(func=cmd_symbolic_status)
 
     p = sub.add_parser("list")
     p.set_defaults(func=cmd_list)
