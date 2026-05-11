@@ -12,9 +12,13 @@ from neon.artifact import VERSION, canonical_bytes, read_json, utc_now, validate
 from neon.cas import cas_path, cas_uri, parse_cas_uri, sha256_bytes, sha256_file
 from neon.lifecycle import make_artifact, resolve_artifact_path, save_artifact
 from neon.metrics import summarize_metrics
-from neon.storage import connect, db_path, init_db, require_vault_dirs, vault_root
+from neon.storage import connect, db_path, init_db, objects_root, require_vault_dirs, vault_root
 from neon.topology import ancestry_chain, artifact_metrics, descendant_chain
 from neon.verification import proof_packet_manifest, verify_artifact_file, verify_proof_packet
+
+
+def object_path(digest: str) -> Path:
+    return cas_path(objects_root(), digest)
 
 
 def cmd_init(args: argparse.Namespace) -> None:
@@ -82,7 +86,7 @@ def cmd_store(args: argparse.Namespace) -> None:
     raw = canonical_bytes(data)
     digest = sha256_bytes(raw)
 
-    out = cas_path(digest)
+    out = object_path(digest)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(raw)
 
@@ -100,7 +104,7 @@ def cmd_store(args: argparse.Namespace) -> None:
 
 def cmd_fetch(args: argparse.Namespace) -> None:
     digest = parse_cas_uri(args.uri)
-    path = cas_path(digest)
+    path = object_path(digest)
     if not path.exists():
         raise SystemExit(f"Object not found: {args.uri}")
     if args.out:
