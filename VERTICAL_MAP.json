@@ -1,0 +1,104 @@
+{
+  "version": "0.1.0-alpha",
+  "purpose": "Machine-readable ownership map for .NeoN vertical alignment.",
+  "rule": "Every meaningful file should have a primary vertical owner.",
+  "verticals": {
+    "01-artifact-core": {
+      "name": "Artifact Core",
+      "owns": [
+        "src/neon/artifact.py",
+        "spec/v0.1/artifact.schema.json",
+        "SPEC_NEON_FILE_FORMAT.md",
+        "tests/test_artifact_validation.py"
+      ]
+    },
+    "02-continuity-graph": {
+      "name": "Continuity Graph",
+      "owns": [
+        "src/neon/lineage.py",
+        "LINEAGE_SEMANTICS.md",
+        "examples/chain/",
+        "tests/test_lineage_graph.py"
+      ]
+    },
+    "03-proof-verification": {
+      "name": "Proof and Verification",
+      "owns": [
+        "src/neon/proof.py",
+        "VERIFICATION.md",
+        "TRUST_PROTOCOL.md",
+        "spec/v0.1/proof-packet.schema.json",
+        "tests/test_negative_verification.py"
+      ]
+    },
+    "04-storage-cas": {
+      "name": "Storage and CAS",
+      "owns": [
+        "src/neon/storage.py",
+        "src/neon/cas.py",
+        "CAS.md",
+        "CANONICAL_HASHING.md",
+        "tests/test_cas_fetch.py",
+        "tests/test_invalid_cas_uri.py",
+        "tests/test_hash.py"
+      ]
+    },
+    "05-metrics-topology": {
+      "name": "Metrics and Topology",
+      "owns": [
+        "src/neon/metrics.py",
+        "DERIVATIVES.md",
+        "tests/test_metrics.py"
+      ]
+    },
+    "06-symbolic-compression": {
+      "name": "Symbolic Compression",
+      "owns": [
+        "src/neon/symbols.py",
+        "CS_SYMBOLIC_NOTATION.md",
+        "examples/symbolic-state-example.md",
+        "reports/CONTINUITY_REPORT_TEMPLATE.md"
+      ]
+    },
+    "07-runtime-cli": {
+      "name": "Runtime and CLI",
+      "owns": [
+        "src/neon/cli.py",
+        "WORKLEDGER_COMMANDS.md",
+        "tests/test_workledger_flow.py",
+        "tests/test_modules.py"
+      ]
+    },
+    "08-prototype-experience": {
+      "name": "Prototype Experience",
+      "owns": [
+        "README.md",
+        "examples/golden/",
+        "tests/test_demo_loop.py"
+      ]
+    },
+    "09-governance-discipline": {
+      "name": "Governance and Discipline",
+      "owns": [
+        "GRAVITY_ANCHOR.md",
+        "ROADMAP_V0_2.md",
+        "STRUCTURE.md",
+        "AUDIT.md",
+        "CONTRIBUTING.md",
+        "docs/README.md",
+        "VERTICALS.md",
+        "VERTICAL_MAP.json",
+        ".github/workflows/ci.yml"
+      ]
+    },
+    "10-future-topology": {
+      "name": "Future Topology",
+      "owns": [
+        "WEIRD_LAYER_OUTLINE.md",
+        "RUNTIME_DIRECTION.md",
+        "MOJO_COMPATIBILITY.md",
+        "IDEA_BANK_100.md"
+      ]
+    }
+  }
+}
