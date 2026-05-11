@@ -6,6 +6,36 @@ This roadmap moves .NeoN from protocol seed to continuity substrate.
 
 .NeoN preserves the lineage of human-origin intelligence through transformation.
 
+## Current Phase — Kernel Hardening
+
+The project has passed the post-extraction green baseline.
+
+Baseline:
+
+```text
+e962c4bec6e2975333aa58ebfd3b5325e3cb9ff9
+```
+
+Branch:
+
+```text
+green-baseline-e962c4b
+```
+
+Current development rule:
+
+```text
+Every refactor that changes a runtime boundary must add or preserve a regression guard before the next extraction.
+```
+
+Current emphasis:
+
+- keep `neon.cli` thin but compatible
+- keep command handlers extracted
+- harden kernel modules with tests
+- add diagnostic commands like `neon doctor`
+- add golden fixtures before deeper command splits
+
 ## v0.2 Target
 
 By v0.2, .NeoN must be:
@@ -18,11 +48,14 @@ By v0.2, .NeoN must be:
 - implementation-neutral
 - test-backed
 - documented
+- diagnostically inspectable
 
 ## Required Command Surface
 
 ```bash
 neon init
+neon doctor
+neon demo
 neon register
 neon derive
 neon validate
@@ -32,9 +65,13 @@ neon fetch
 neon export
 neon verify
 neon graph
+neon lineage
+neon descendants
+neon metrics
 neon log
 neon list
 neon status
+neon symbolic-status
 ```
 
 ## Phase 1 — Foundation
@@ -42,7 +79,8 @@ neon status
 Goal: establish the irreversible primitive.
 
 Deliverables:
-- one canonical CLI at `src/neon/cli.py`
+- thin public CLI at `src/neon/cli.py`
+- extracted command handlers under `src/neon/commands/`
 - canonical `.neon` artifact structure
 - deterministic SHA-256 hashing
 - CAS address format `.neon://sha256/<digest>`
@@ -60,11 +98,12 @@ Deliverables:
 - working `pyproject.toml`
 - installable `neon` command
 - frozen `spec/v0.1/` folder
-- golden artifact suite
+- green baseline branch
 - release notes discipline
+- `neon doctor` diagnostic command
 
 Exit criteria:
-- fresh clone can install and run the WorkLedger flow
+- fresh clone can install, run, diagnose, and verify the continuity loop
 
 ## Phase 3 — Structural Continuity
 
@@ -75,6 +114,8 @@ Deliverables:
 - tamper detection tests
 - broken lineage tests
 - invalid CAS URI tests
+- CLI compatibility surface tests
+- command surface tests
 - OpenTimestamps workflow
 - signed release guidance
 
@@ -92,9 +133,11 @@ Deliverables:
 - artifact resolution layer
 - CAS resolution layer
 - lineage traversal layer
+- descendants traversal layer
+- topology metrics layer
 
 Exit criteria:
-- artifacts can be resolved by path, title, ID, and CAS URI where appropriate
+- artifacts can be resolved and inspected across path, title, ID, lineage, descendants, and proof packet where appropriate
 
 ## Phase 5 — Testing
 
@@ -105,10 +148,13 @@ Deliverables:
 - recursive derivation test
 - malformed artifact tests
 - deterministic proof packet tests
+- golden artifact fixtures
+- golden lineage output
+- golden metrics output
 - mutation tests
 
 Exit criteria:
-- tests prove deterministic behavior and failure behavior
+- tests prove deterministic behavior, failure behavior, and stable public surfaces
 
 ## Phase 6 — Bug Testing and Cleanup
 
@@ -119,10 +165,11 @@ Deliverables:
 - compress overlapping docs
 - normalize naming
 - remove stale references
-- full regression run
+- split `commands/core.py` into command lanes only after golden fixtures exist
+- full regression run through `scripts/release_check.py`
 
 Exit criteria:
-- one runtime, one core spec, one gravity anchor, one command surface
+- one runtime, one core spec, one gravity anchor, one command surface, one release gate
 
 ## Phase 7 — Documentation
 
@@ -131,6 +178,7 @@ Goal: preserve the knowledge.
 Deliverables:
 - five-minute quickstart
 - CLI usage guide
+- `neon doctor` guide
 - proof packet guide
 - CAS guide
 - trust protocol guide
@@ -138,7 +186,7 @@ Deliverables:
 - contributor doctrine
 
 Exit criteria:
-- a new contributor can understand, install, run, and verify the project in under 10 minutes
+- a new contributor can understand, install, diagnose, run, and verify the project in under 10 minutes
 
 ## Agent Roles
 
@@ -180,6 +228,12 @@ v0.2 succeeds when this loop is boringly reliable:
 
 ```text
 create -> derive -> hash -> store -> export -> verify -> inspect
+```
+
+And when a user can diagnose the substrate with:
+
+```bash
+neon doctor
 ```
 
 If that loop is clean, .NeoN has a substrate.
