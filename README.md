@@ -1,95 +1,144 @@
 # .NeoN
 
-**The Git of human-origin intelligence ownership.**
+**Continuity infrastructure for human-origin intelligence.**
 
-.NeoN is an ownership-first provenance protocol for workflows, automations, prompts, AI agents, operational systems, and other forms of reusable human-created intelligence.
+.NeoN is a local-first protocol for preserving attribution, lineage, proof, and portability as human-created workflows, automations, prompts, systems, and AI-assisted artifacts transform over time.
 
-The founding idea is simple:
+> Attribution survives transformation.
 
-> **Automation should not erase the human who created it.**
+## What Works Now
 
-Modern workers and creators increasingly build systems that continue producing value after the original labor is complete. A spreadsheet automation, prompt chain, no-code workflow, internal tool, AI agent, reporting pipeline, customer support flow, or process architecture can become permanent infrastructure. Today, that origin is usually invisible.
+The current reference implementation supports the core continuity loop:
 
-.NeoN exists to make human-origin intelligence:
+```text
+create -> derive -> hash -> store -> export -> verify -> inspect
+```
 
-- attributable
-- portable
-- versioned
-- measurable
-- licensable
-- economically participatory
+CLI surface:
 
-This repository is the seed of the .NeoN protocol.
+```bash
+neon init
+neon register
+neon derive
+neon validate
+neon hash
+neon store
+neon fetch
+neon export
+neon verify
+neon graph
+neon lineage
+neon log
+neon list
+neon status
+```
 
-## Founder
+## Quickstart
 
-**Originator:** Carl Sowers  
-**Project:** .NeoN  
-**Purpose:** Build infrastructure for attribution, provenance, and shared prosperity in the automation age.
+```bash
+pip install -e .
 
-## What .NeoN Tracks
+neon init
+neon register --title "Invoice Workflow" --creator "Carl Sowers"
+neon derive --parent .neon-vault/artifacts/invoice-workflow.neon --title "AI Assisted Workflow" --creator "Carl Sowers"
+neon hash .neon-vault/artifacts/ai-assisted-workflow.neon
+neon store .neon-vault/artifacts/ai-assisted-workflow.neon
+neon export .neon-vault/artifacts/ai-assisted-workflow.neon
+neon verify .neon-vault/exports/ai-assisted-workflow-proof
+neon graph .neon-vault/artifacts/ai-assisted-workflow.neon
+```
 
-.NeoN treats reusable intelligence as an artifact with lineage.
+Inspect the living example chain:
 
-Examples:
+```bash
+neon lineage examples/chain/proof-enhanced-invoice-workflow.neon --root examples/chain
+```
 
-- workflows
-- prompt systems
-- AI agent chains
-- automations
-- internal tools
-- business processes
-- operational playbooks
-- data transformation pipelines
-- optimization methods
-- employee-created productivity systems
+## Native Artifact
 
-## Core Objects
+A `.neon` file is a readable, portable, lineage-bearing intelligence artifact.
 
-| Object | Meaning |
-| --- | --- |
-| `.N Artifact` | A reusable unit of human-origin intelligence. |
-| `.N Commit` | A signed change to an artifact. |
-| `.N Ledger` | An append-only provenance record. |
-| `.N Impact` | A record of measurable value produced. |
-| `.N License` | A permission and participation framework. |
+Minimum shape:
+
+```json
+{
+  "neon_version": "0.1.0-alpha",
+  "kind": "artifact",
+  "artifact_id": ".N/example",
+  "title": "Example Artifact",
+  "artifact_type": "workflow",
+  "creator": { "name": "Creator" },
+  "origin": { "created_at": "...", "statement": "..." },
+  "lineage": { "parents": [], "events": [] },
+  "proof": { "hash_algorithm": "sha256", "anchors": [] }
+}
+```
+
+## Storage
+
+.NeoN uses local content-addressed storage:
+
+```text
+.neon://sha256/<digest>
+```
+
+Vault layout:
+
+```text
+.neon-vault/
+├── artifacts/
+├── objects/sha256/
+├── exports/
+├── indexes/
+├── proofs/
+├── identity.json
+└── ledger.sqlite
+```
+
+## Proof Packets
+
+Exports are human-readable proof packets:
+
+```text
+proof-packet/
+├── artifact.neon
+├── manifest.json
+├── hashes.txt
+├── SUMMARY.md
+├── lineage.json
+└── verification.json
+```
 
 ## Repository Map
 
 ```text
-.
-├── README.md
-├── MANIFESTO.md
-├── PROTOCOL.md
-├── ROADMAP.md
-├── SPEC/
-│   ├── neon-artifact.schema.json
-│   ├── neon-commit.schema.json
-│   └── neon-ledger.schema.json
-├── LICENSES/
-│   ├── NEON-ATTRIBUTION.md
-│   ├── NEON-RESIDUAL.md
-│   └── NEON-NON-REPLACEMENT.md
-└── EXAMPLES/
-    └── invoice-automation.neon.json
+src/neon/              reference implementation
+spec/v0.1/             frozen v0.1 schemas
+examples/chain/        living lineage example
+examples/golden/       golden reference objects
+tests/                 executable invariants
+GRAVITY_ANCHOR.md      project center
+ROADMAP_V0_2.md        current execution contract
+TRUST_PROTOCOL.md      timestamp/signature guidance
+CS_SYMBOLIC_NOTATION.md symbolic compression layer
 ```
 
-## Current Status
+## Design Constraints
 
-This is an early public foundation. It is not legal advice, not a completed legal license system, and not yet an enforceable rights framework by itself.
+- local-first
+- deterministic
+- content-addressed
+- implementation-neutral
+- human-readable
+- proof-oriented
+- no cloud dependency
+- no blockchain dependency
+- no marketplace layer before the primitive is stable
 
-It is a protocol seed: language, structure, schemas, and principles for a future where human-created intelligence remains visible after automation scales it.
+## Status
 
-## North Star
+Early alpha protocol seed.
 
-A future where every creator can say:
+Not legal advice. Not a completed licensing system. Not a replacement for contracts.
 
-> I built this system.  
-> Here is the proof.  
-> Here is its lineage.  
-> Here is its impact.  
-> Here are the terms under which it may be used.
-
-## First Principle
-
-**Attribution survives automation.**
+Current focus: make the continuity substrate boringly reliable.
