@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from neon.metrics import ContinuityMetrics, summarize_metrics
+
 VAULT_DIR = ".neon-vault"
 VERSION = "0.1.0-alpha"
 REQUIRED_FIELDS = [
@@ -278,6 +280,32 @@ def descendant_chain(start: Path, search_root: Path) -> list[dict[str, Any]]:
     return out
 
 
+def artifact_metrics(start: Path, search_root: Path) -> ContinuityMetrics:
+    data = read_json(start)
+    artifact_id = data.get("artifact_id")
+    if not isinstance(artifact_id, str):
+        raise SystemExit(f"Artifact missing artifact_id: {start}")
+    parent_count = len(data.get("lineage", {}).get("parents", []))
+    ancestors = ancestry_chain(start, search_root)
+    descendants = descendant_chain(start, search_root)
+    ancestor_count = max(0, len(ancestors) - 1)
+    descendant_count = len(descendants)
+    lineage_depth = ancestor_count
+    child_count = 0
+    for item in descendants:
+        child_data = read_json(Path(item["path"]))
+        if artifact_id in child_data.get("lineage", {}).get("parents", []):
+            child_count += 1
+    return ContinuityMetrics(
+        artifact_id=artifact_id,
+        parent_count=parent_count,
+        child_count=child_count,
+        ancestor_count=ancestor_count,
+        descendant_count=descendant_count,
+        lineage_depth=lineage_depth,
+    )
+
+
 def cas_path(digest: str) -> Path:
     return objects_root() / digest[:2] / digest
 
@@ -470,6 +498,28 @@ def cmd_descendants(args: argparse.Namespace) -> None:
         print(f"-> {item['artifact_id']} | {item['title']}")
 
 
+def cmd_metrics(args: argparse.Namespace) -> None:
+    start = Path(args.artifact)
+    if not start.exists():
+        start = resolve_artifact_path(args.artifact)
+    metrics = artifact_metrics(start, Path(args.root))
+    if args.format == "json":
+        print(json.dumps({
+            "artifact_id": metrics.artifact_id,
+            "parent_count": metrics.parent_count,
+            "child_count": metrics.child_count,
+            "ancestor_count": metrics.ancestor_count,
+            "descendant_count": metrics.descendant_count,
+            "lineage_depth": metrics.lineage_depth,
+            "continuity_vector": metrics.continuity_vector,
+            "pressure_vector": metrics.pressure_vector,
+            "derivation_ratio": metrics.derivation_ratio,
+            "influence_ratio": metrics.influence_ratio,
+        }, indent=2))
+        return
+    print(summarize_metrics(metrics))
+
+
 def cmd_symbolic_status(args: argparse.Namespace) -> None:
     print("⚡ π.v0.2")
     print("✓ λ.hashing")
@@ -508,9 +558,12 @@ def cmd_demo(args: argparse.Namespace) -> None:
     print(f"workflow: {workflow_path}")
     print(f"derived: {derived_path}")
     print(f"proof: {proof_dir}")
+    print("\nMetrics:")
+    cmd_metrics(argparse.Namespace(artifact=str(derived_path), root=str(vault_root() / "artifacts"), format="text"))
     print("\nInspect:")
     print(f"neon lineage {derived_path} --root {vault_root() / 'artifacts'}")
     print(f"neon descendants {root_path} --root {vault_root() / 'artifacts'}")
+    print(f"neon metrics {derived_path} --root {vault_root() / 'artifacts'}")
     print(f"neon graph {derived_path}")
 
 
@@ -602,6 +655,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--root", default=".")
     p.add_argument("--format", choices=["text", "json"], default="text")
     p.set_defaults(func=cmd_descendants)
+
+    p = sub.add_parser("metrics")
+    p.add_argument("artifact")
+    p.add_argument("--root", default=".")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+    p.set_defaults(func=cmd_metrics)
 
     p = sub.add_parser("symbolic-status")
     p.set_defaults(func=cmd_symbolic_status)
