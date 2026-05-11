@@ -1,0 +1,29 @@
+{
+  "artifact_id": ".N/golden-original-workflow",
+  "artifact_type": "workflow",
+  "creator": {
+    "name": "Carl Sowers"
+  },
+  "kind": "artifact",
+  "lineage": {
+    "events": [
+      {
+        "created_at": "2026-05-11T00:05:00+00:00",
+        "event_type": "derived"
+      }
+    ],
+    "parents": [
+      ".N/golden-creator-root"
+    ]
+  },
+  "neon_version": "0.1.0-alpha",
+  "origin": {
+    "created_at": "2026-05-11T00:05:00+00:00",
+    "statement": "Original workflow continuity fixture"
+  },
+  "proof": {
+    "anchors": [],
+    "hash_algorithm": "sha256"
+  },
+  "title": "Golden Original Workflow"
+}
