@@ -8,6 +8,7 @@ from neon.commands.core import (
     cmd_demo,
     cmd_derive,
     cmd_descendants,
+    cmd_doctor,
     cmd_export,
     cmd_fetch,
     cmd_graph,
@@ -50,6 +51,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("init")
     p.set_defaults(func=cmd_init)
+
+    p = sub.add_parser("doctor")
+    p.set_defaults(func=cmd_doctor)
 
     p = sub.add_parser("demo")
     p.add_argument("--creator", default="Carl Sowers")
