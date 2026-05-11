@@ -1,9 +1,1 @@
 blank_issues_enabled: false
-contact_links:
-  - name: Implementation or Specification Task
-    url: https://github.com/euphoricdoom/.Neon/issues/new?template=task.md
-    about: Use the Task template for implementation/spec work.
-  - name: Governance or Workflow Change
-    url: https://github.com/euphoricdoom/.Neon/issues/new?template=governance.md
-    about: Use the Governance template for process/workflow updates.
-
