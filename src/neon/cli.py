@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 
+from neon.artifact import canonical_bytes, read_json
+from neon.cas import sha256_bytes
 from neon.commands.core import (
     cmd_demo,
     cmd_derive,
