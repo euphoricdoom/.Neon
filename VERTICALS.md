@@ -80,7 +80,7 @@ Make artifacts traceable across transformation.
 
 ### Current files
 - `src/neon/lineage.py`
-- `LINEAGE_SEMANTICS.md`
+- `docs/specs/LINEAGE_SEMANTICS.md`
 - `examples/chain/`
 
 ### Lenticular Plan
@@ -150,8 +150,8 @@ Make artifacts locally durable and content-addressed.
 ### Current files
 - `src/neon/storage.py`
 - `src/neon/cas.py`
-- `CAS.md`
-- `CANONICAL_HASHING.md`
+- `docs/specs/CAS.md`
+- `docs/specs/CANONICAL_HASHING.md`
 
 ### Lenticular Plan
 
@@ -184,7 +184,7 @@ Describe continuity structure without turning it into popularity, market value, 
 
 ### Current files
 - `src/neon/metrics.py`
-- `DERIVATIVES.md`
+- `docs/archive/DERIVATIVES.md`
 
 ### Lenticular Plan
 
@@ -320,9 +320,9 @@ Prevent drift while allowing controlled evolution.
 
 ### Current files
 - `GRAVITY_ANCHOR.md`
-- `ROADMAP_V0_2.md`
+- `docs/archive/ROADMAP_V0_2.md`
 - `STRUCTURE.md`
-- `AUDIT.md`
+- `docs/archive/AUDIT.md`
 - `CONTRIBUTING.md`
 - `docs/README.md`
 

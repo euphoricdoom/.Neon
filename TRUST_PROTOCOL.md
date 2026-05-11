@@ -11,12 +11,12 @@ All important `.NeoN` protocol documents, specs, golden artifacts, and proof pac
 
 Targets:
 
-- CORE_SPEC.md
+- docs/specs/CORE_SPEC.md
 - GRAVITY_ANCHOR.md
-- CAS.md
+- docs/specs/CAS.md
 - SPEC_NEON_FILE_FORMAT.md
-- LINEAGE_SEMANTICS.md
-- CANONICAL_HASHING.md
+- docs/specs/LINEAGE_SEMANTICS.md
+- docs/specs/CANONICAL_HASHING.md
 - examples/golden/*.neon
 - future spec/v0.1/*
 
@@ -31,14 +31,14 @@ It should not reveal private creator artifacts unless the creator chooses to pub
 ## Suggested Workflow
 
 ```bash
-sha256sum CORE_SPEC.md > timestamps.txt
-otstamp CORE_SPEC.md
+sha256sum docs/specs/CORE_SPEC.md > timestamps.txt
+otstamp docs/specs/CORE_SPEC.md
 ```
 
 This produces:
 
 ```text
-CORE_SPEC.md.ots
+docs/specs/CORE_SPEC.md.ots
 ```
 
 The `.ots` receipt should be committed beside the public file when appropriate.

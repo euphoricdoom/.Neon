@@ -6,25 +6,25 @@ This folder is the compressed documentation surface for .NeoN.
 
 - `../README.md` — install, quickstart, command surface
 - `../GRAVITY_ANCHOR.md` — invariant center
-- `../ROADMAP_V0_2.md` — active build contract
+- `../ROADMAP_LINKS.md` — source-of-truth links
 
 ## Protocol
 
-- `../CORE_SPEC.md`
+- `specs/CORE_SPEC.md`
 - `../spec/v0.1/README.md`
 - `../spec/v0.1/artifact.schema.json`
 - `../spec/v0.1/proof-packet.schema.json`
 
 ## Runtime
 
-- `../CAS.md`
-- `../CANONICAL_HASHING.md`
+- `specs/CAS.md`
+- `specs/CANONICAL_HASHING.md`
 - `../WORKLEDGER_COMMANDS.md`
 
 ## Continuity
 
-- `../LINEAGE_SEMANTICS.md`
-- `../REFERENCE_LIFECYCLE.md`
+- `specs/LINEAGE_SEMANTICS.md`
+- `specs/REFERENCE_LIFECYCLE.md`
 - `../TRUST_PROTOCOL.md`
 
 ## Symbolic Layer

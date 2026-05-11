@@ -8,8 +8,8 @@ Owns:
 - release discipline
 
 Target docs:
-- `AUDIT.md`
-- `ROADMAP_V0_2.md`
+- `docs/archive/AUDIT.md`
+- `docs/archive/ROADMAP_V0_2.md`
 - `GRAVITY_ANCHOR.md`
 - `STRUCTURE.md`
 

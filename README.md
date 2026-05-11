@@ -118,7 +118,7 @@ examples/chain/        living lineage example
 examples/golden/       golden reference objects
 tests/                 executable invariants
 GRAVITY_ANCHOR.md      project center
-ROADMAP_V0_2.md        current execution contract
+ROADMAP_LINKS.md       source-of-truth navigation
 TRUST_PROTOCOL.md      timestamp/signature guidance
 CS_SYMBOLIC_NOTATION.md symbolic compression layer
 ```
