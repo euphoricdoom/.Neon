@@ -483,6 +483,37 @@ def cmd_symbolic_status(args: argparse.Namespace) -> None:
     print("✗ θ.doc-overlap")
 
 
+def cmd_demo(args: argparse.Namespace) -> None:
+    require_vault_dirs()
+    conn = sqlite3.connect(db_path())
+    init_db(conn)
+    conn.close()
+
+    root = make_artifact("Demo Creator Root", args.creator, "creator_identity", "Demo creator continuity root")
+    root_path, _ = save_artifact(root)
+
+    workflow = make_artifact("Demo Workflow", args.creator, "workflow", "Original reusable workflow", [root["artifact_id"]])
+    workflow_path, _ = save_artifact(workflow)
+
+    derived = make_artifact("Demo AI Assisted Workflow", args.creator, "workflow", "Workflow derived with AI assistance", [workflow["artifact_id"]])
+    derived_path, _ = save_artifact(derived)
+
+    cmd_store(argparse.Namespace(artifact=str(derived_path)))
+    cmd_export(argparse.Namespace(artifact=str(derived_path)))
+    proof_dir = vault_root() / "exports" / f"{derived_path.stem}-proof"
+    cmd_verify(argparse.Namespace(target=str(proof_dir)))
+
+    print("\nDemo continuity loop complete")
+    print(f"root: {root_path}")
+    print(f"workflow: {workflow_path}")
+    print(f"derived: {derived_path}")
+    print(f"proof: {proof_dir}")
+    print("\nInspect:")
+    print(f"neon lineage {derived_path} --root {vault_root() / 'artifacts'}")
+    print(f"neon descendants {root_path} --root {vault_root() / 'artifacts'}")
+    print(f"neon graph {derived_path}")
+
+
 def cmd_log(args: argparse.Namespace) -> None:
     data = read_json(resolve_artifact_path(args.artifact))
     print(data["title"])
@@ -518,6 +549,10 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("init")
     p.set_defaults(func=cmd_init)
+
+    p = sub.add_parser("demo")
+    p.add_argument("--creator", default="Carl Sowers")
+    p.set_defaults(func=cmd_demo)
 
     p = sub.add_parser("register")
     p.add_argument("--title", required=True)
