@@ -1,0 +1,2 @@
+[console_scripts]
+neon = neon.cli:main
