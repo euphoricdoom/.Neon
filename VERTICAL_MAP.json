@@ -16,7 +16,7 @@
       "name": "Continuity Graph",
       "owns": [
         "src/neon/lineage.py",
-        "LINEAGE_SEMANTICS.md",
+        "docs/specs/LINEAGE_SEMANTICS.md",
         "examples/chain/",
         "tests/test_lineage_graph.py"
       ]
@@ -36,8 +36,8 @@
       "owns": [
         "src/neon/storage.py",
         "src/neon/cas.py",
-        "CAS.md",
-        "CANONICAL_HASHING.md",
+        "docs/specs/CAS.md",
+        "docs/specs/CANONICAL_HASHING.md",
         "tests/test_cas_fetch.py",
         "tests/test_invalid_cas_uri.py",
         "tests/test_hash.py"
@@ -47,7 +47,7 @@
       "name": "Metrics and Topology",
       "owns": [
         "src/neon/metrics.py",
-        "DERIVATIVES.md",
+        "docs/archive/DERIVATIVES.md",
         "tests/test_metrics.py"
       ]
     },
@@ -81,9 +81,9 @@
       "name": "Governance and Discipline",
       "owns": [
         "GRAVITY_ANCHOR.md",
-        "ROADMAP_V0_2.md",
+        "docs/archive/ROADMAP_V0_2.md",
         "STRUCTURE.md",
-        "AUDIT.md",
+        "docs/archive/AUDIT.md",
         "CONTRIBUTING.md",
         "docs/README.md",
         "VERTICALS.md",
@@ -97,7 +97,7 @@
         "WEIRD_LAYER_OUTLINE.md",
         "RUNTIME_DIRECTION.md",
         "MOJO_COMPATIBILITY.md",
-        "IDEA_BANK_100.md"
+        "docs/archive/IDEA_BANK_100.md"
       ]
     }
   }

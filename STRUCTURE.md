@@ -70,9 +70,8 @@ Top-level docs may exist only when they carry core doctrine, protocol contracts,
 
 ```text
 README.md
+ROADMAP_LINKS.md
 GRAVITY_ANCHOR.md
-ROADMAP_V0_2.md
-CORE_SPEC.md
 TRUST_PROTOCOL.md
 CS_SYMBOLIC_NOTATION.md
 STRUCTURE.md

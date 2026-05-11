@@ -15,7 +15,7 @@ Move here as a staging step before permanent deletion.
 
 ## Current Contents
 
-*(Empty — files will be moved here as they are classified during N-025/N-026.)*
+Current staged files include planning, governance, release evidence, and derivative drafts moved from repo root during MD cleanup.
 
 ## Source of Truth
 
