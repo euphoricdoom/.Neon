@@ -42,3 +42,5 @@ The following blockers must be resolved before v0.1 is released:
 - **Employee Automation Example** — missing
 
 See [docs/release/v0.1_release_manifest.md](docs/release/v0.1_release_manifest.md) for full release tracking.
+
+Before major repo/agent changes, run [docs/release/preflight_checklist.md](docs/release/preflight_checklist.md).
