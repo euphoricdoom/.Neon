@@ -21,6 +21,23 @@ def object_path(digest: str) -> Path:
     return cas_path(objects_root(), digest)
 
 
+def cmd_doctor(args: argparse.Namespace) -> None:
+    checks = [
+        ("vault", vault_root().exists()),
+        ("database", db_path().exists()),
+        ("artifacts", (vault_root() / "artifacts").is_dir()),
+        ("exports", (vault_root() / "exports").is_dir()),
+        ("objects", objects_root().is_dir()),
+    ]
+    ok = True
+    for name, passed in checks:
+        print(f"{'✓' if passed else '✗'} {name}")
+        ok = ok and passed
+    if not ok:
+        raise SystemExit(1)
+    print("doctor ok")
+
+
 def cmd_init(args: argparse.Namespace) -> None:
     require_vault_dirs()
     conn = sqlite3.connect(db_path())
