@@ -135,10 +135,38 @@ CS_SYMBOLIC_NOTATION.md symbolic compression layer
 - no blockchain dependency
 - no marketplace layer before the primitive is stable
 
+## Source of Truth
+
+This project uses a three-layer governance model:
+
+| Layer | Role | Location |
+|-------|------|----------|
+| **Workbook** | Operational brain — tasks, status, roadmap | [NeoN Professional Roadmap — Control Board](https://docs.google.com/spreadsheets/d/1NTBiZnfmFfomY4usrMO_LbOwoVJyKkvvClGW0UKPWQw) |
+| **Drive** | Canonical document archive — long-form specs until stable | [NeoN Drive Folder](https://drive.google.com/drive/folders/1wrFbkJAemSqedrQ1PgoyEUsecGE3IaPo) |
+| **GitHub** | Executable/versioned body — specs, examples, tests, CI, release artifacts | This repo |
+
+Planning and backlog belong in the workbook. Long-form canonical docs live in Drive until stable. The repo contains versioned specs, examples, schemas, validators, tests, CI, and release manifests.
+
+## Active Issues
+
+- [#15](https://github.com/euphoricdoom/.Neon/issues/15) — active
+- [#16](https://github.com/euphoricdoom/.Neon/issues/16) — active
+- [#17](https://github.com/euphoricdoom/.Neon/issues/17) — active
+
+## v0.1 Blockers
+
+The following items must be resolved before v0.1 release:
+
+- **RIGHTS_SCHEMA_v0.1** — missing
+- **DISCLOSURE_BUNDLE_FORMAT** — missing
+- **Employee Automation Example** — missing
+
 ## Status
 
-Early alpha protocol seed.
+Early alpha protocol seed. **v0.1 is NOT ready.**
 
 Not legal advice. Not a completed licensing system. Not a replacement for contracts.
 
 Current focus: make the continuity substrate boringly reliable.
+
+See [ROADMAP_LINKS.md](ROADMAP_LINKS.md) for full source-of-truth navigation.
