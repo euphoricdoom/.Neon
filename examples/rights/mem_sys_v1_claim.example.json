@@ -1,0 +1,132 @@
+{
+  "schema": "neon.rights",
+  "schema_version": "0.1",
+  "rights_record_id": "rights:mem_sys_v1:001",
+  "artifact_ref": ".N/mem_sys_v1",
+  "claim": {
+    "claim_types": [
+      "conceptual_origin",
+      "contribution_record",
+      "similarity_assertion",
+      "ai_assisted_work"
+    ],
+    "confidence": "correlated",
+    "summary": "Creator claims prior conceptual development of a conversational memory-management system before a later similar platform feature appeared.",
+    "limitations": "This record preserves timeline, overlap, and contribution assertions. It does not verify appropriation or determine legal ownership.",
+    "legal_posture": "provenance_and_declaration_not_legal_determination"
+  },
+  "contributors": [
+    {
+      "contributor_id": "user:carl_sowers",
+      "type": "human",
+      "name": "Carl Sowers",
+      "roles": ["originator", "designer"],
+      "contribution_summary": "Designed and iterated on a memory-system concept including conversation continuity, preference tracking, context persistence, and explicit memory management.",
+      "attribution_preference": "named"
+    },
+    {
+      "contributor_id": "tool:claude",
+      "type": "ai_tool",
+      "name": "Claude",
+      "roles": ["assistant"],
+      "contribution_summary": "Used as an interactive conversational design environment during development and iteration.",
+      "attribution_preference": "tool_disclosure"
+    }
+  ],
+  "provenance": {
+    "created_at": "2024-11",
+    "created_at_precision": "month",
+    "creation_context": "Extended conversational design sessions exploring persistent AI memory systems.",
+    "platform_or_tool": "Claude",
+    "source_materials": [],
+    "related_artifacts": [
+      {
+        "ref": "platform_feature:conversation_memory",
+        "description": "Later platform memory feature with overlapping concepts.",
+        "visibility": "public"
+      }
+    ],
+    "derivative_links": [],
+    "prior_art_refs": []
+  },
+  "ai_assistance": {
+    "used": true,
+    "tools": [
+      {
+        "name": "Claude",
+        "provider": "Anthropic",
+        "model": null,
+        "role": "interactive design assistance"
+      }
+    ],
+    "role": "brainstorming",
+    "human_reviewed": true,
+    "prompt_refs": [],
+    "disclosure_note": "AI system was used as a conversational development partner during ideation and iteration."
+  },
+  "labor_context": {
+    "created_during_employment": false,
+    "employer_or_client": null,
+    "assigned_task_related": false,
+    "automates_assigned_task": false,
+    "estimated_hours_saved": null,
+    "hours_saved_period": null,
+    "value_claim_summary": "Creator seeks provenance preservation, recognition, and potential future leverage rather than exclusive control.",
+    "recognition_or_compensation_sought": true,
+    "negotiation_preference": "open sharing compatible after stability/recognition path exists",
+    "legal_status_note": "Similarity overlap does not by itself prove appropriation or legal infringement."
+  },
+  "sharing_intent": {
+    "attribution_required": true,
+    "open_source_compatible": true,
+    "commercial_negotiation_preferred": true,
+    "collaboration_welcome": true,
+    "license_mode": "negotiable",
+    "future_release_condition": "Open/public sharing acceptable when creator stability and attribution path exist.",
+    "usage_notes": "Creator is not opposed to open ideas; concern centers on contribution continuity and leverage."
+  },
+  "evidence": [
+    {
+      "type": "conversation_export",
+      "ref": "conversation:2024-11:mem_sys_v1",
+      "description": "Conversational design discussions describing memory system concepts.",
+      "visibility": "private",
+      "confidence_weight": "medium"
+    },
+    {
+      "type": "timestamp",
+      "ref": "2024-11",
+      "description": "Approximate origin date for mem_sys_v1 concept work.",
+      "visibility": "public",
+      "confidence_weight": "medium"
+    },
+    {
+      "type": "workbook_evidence_id",
+      "ref": "E-026",
+      "description": "RIGHTS_SCHEMA workflow kickoff evidence entry.",
+      "visibility": "public",
+      "confidence_weight": "high"
+    }
+  ],
+  "redaction": {
+    "public_fields": [
+      "claim",
+      "sharing_intent",
+      "contributors",
+      "provenance.created_at"
+    ],
+    "private_fields": [
+      "evidence",
+      "prompt_refs"
+    ],
+    "redacted_fields": [
+      "conversation contents"
+    ],
+    "export_mode": "redacted",
+    "redaction_note": "Private conversation history should not be exported publicly without consent."
+  },
+  "notes": [
+    "This example demonstrates correlated conceptual provenance rather than verified appropriation.",
+    "Confidence intentionally remains below verified."
+  ]
+}
