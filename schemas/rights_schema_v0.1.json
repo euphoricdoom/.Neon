@@ -1,0 +1,225 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neon.local/schemas/rights_schema_v0.1.json",
+  "title": "NeoN Rights Schema v0.1",
+  "description": "Portable contribution intelligence metadata for .NeoN artifacts. This schema records claims, evidence, provenance, AI assistance, labor context, sharing intent, and export safety. It does not determine legal ownership.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "schema_version",
+    "rights_record_id",
+    "artifact_ref",
+    "claim",
+    "contributors",
+    "provenance",
+    "ai_assistance",
+    "labor_context",
+    "sharing_intent",
+    "evidence",
+    "redaction"
+  ],
+  "properties": {
+    "schema": { "const": "neon.rights" },
+    "schema_version": { "const": "0.1" },
+    "rights_record_id": { "type": "string", "minLength": 1 },
+    "artifact_ref": { "type": "string", "minLength": 1 },
+    "claim": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["claim_types", "confidence", "summary", "limitations"],
+      "properties": {
+        "claim_types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "original_creation",
+              "conceptual_origin",
+              "derivative_work",
+              "ai_assisted_work",
+              "labor_automation",
+              "contribution_record",
+              "similarity_assertion",
+              "reference_use"
+            ]
+          }
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["verified", "correlated", "asserted", "speculative", "derived"]
+        },
+        "summary": { "type": "string", "minLength": 1 },
+        "limitations": { "type": "string", "minLength": 1 },
+        "legal_posture": {
+          "type": "string",
+          "default": "provenance_and_declaration_not_legal_determination"
+        }
+      }
+    },
+    "contributors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/contributor" }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created_at": { "type": ["string", "null"] },
+        "created_at_precision": {
+          "type": "string",
+          "enum": ["exact", "day", "month", "year", "approximate", "unknown"]
+        },
+        "creation_context": { "type": ["string", "null"] },
+        "platform_or_tool": { "type": ["string", "null"] },
+        "source_materials": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "related_artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "derivative_links": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "prior_art_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        }
+      }
+    },
+    "ai_assistance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["used"],
+      "properties": {
+        "used": { "type": "boolean" },
+        "tools": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/ai_tool" }
+        },
+        "role": {
+          "type": "string",
+          "enum": ["none", "brainstorming", "drafting", "coding", "review", "refinement", "analysis", "unknown"]
+        },
+        "human_reviewed": { "type": ["boolean", "null"] },
+        "prompt_refs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/reference" }
+        },
+        "disclosure_note": { "type": ["string", "null"] }
+      }
+    },
+    "labor_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "created_during_employment": { "type": ["boolean", "null"] },
+        "employer_or_client": { "type": ["string", "null"] },
+        "assigned_task_related": { "type": ["boolean", "null"] },
+        "automates_assigned_task": { "type": ["boolean", "null"] },
+        "estimated_hours_saved": { "type": ["number", "null"], "minimum": 0 },
+        "hours_saved_period": { "type": ["string", "null"] },
+        "value_claim_summary": { "type": ["string", "null"] },
+        "recognition_or_compensation_sought": { "type": ["boolean", "null"] },
+        "negotiation_preference": { "type": ["string", "null"] },
+        "legal_status_note": { "type": ["string", "null"] }
+      }
+    },
+    "sharing_intent": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attribution_required": { "type": "boolean" },
+        "open_source_compatible": { "type": "boolean" },
+        "commercial_negotiation_preferred": { "type": "boolean" },
+        "collaboration_welcome": { "type": "boolean" },
+        "license_mode": {
+          "type": "string",
+          "enum": ["undecided", "all_rights_reserved", "open_source", "source_available", "negotiable", "internal_use", "custom"]
+        },
+        "future_release_condition": { "type": ["string", "null"] },
+        "usage_notes": { "type": ["string", "null"] }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["export_mode"],
+      "properties": {
+        "public_fields": { "type": "array", "items": { "type": "string" } },
+        "private_fields": { "type": "array", "items": { "type": "string" } },
+        "redacted_fields": { "type": "array", "items": { "type": "string" } },
+        "export_mode": { "type": "string", "enum": ["public", "private", "redacted", "proof_only"] },
+        "redaction_note": { "type": ["string", "null"] }
+      }
+    },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "contributor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["contributor_id", "type", "name", "roles", "contribution_summary", "attribution_preference"],
+      "properties": {
+        "contributor_id": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "enum": ["human", "ai_tool", "organization", "software", "unknown"] },
+        "name": { "type": "string", "minLength": 1 },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "enum": ["originator", "designer", "implementer", "reviewer", "assistant", "employer_context", "reference_source"]
+          }
+        },
+        "contribution_summary": { "type": "string", "minLength": 1 },
+        "attribution_preference": { "type": "string" }
+      }
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ref", "description"],
+      "properties": {
+        "ref": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "visibility": { "type": "string", "enum": ["public", "private", "redacted", "restricted"] }
+      }
+    },
+    "ai_tool": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "provider": { "type": ["string", "null"] },
+        "model": { "type": ["string", "null"] },
+        "role": { "type": ["string", "null"] }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "ref", "description", "visibility", "confidence_weight"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["workbook_evidence_id", "github_issue", "github_pr", "commit", "file_hash", "timestamp", "conversation_export", "local_note", "proof_packet", "external_url", "other"]
+        },
+        "ref": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "visibility": { "type": "string", "enum": ["public", "private", "redacted", "restricted"] },
+        "confidence_weight": { "type": "string", "enum": ["low", "medium", "high"] }
+      }
+    }
+  }
+}
