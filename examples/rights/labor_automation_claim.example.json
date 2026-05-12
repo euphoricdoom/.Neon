@@ -1,0 +1,132 @@
+{
+  "schema": "neon.rights",
+  "schema_version": "0.1",
+  "rights_record_id": "rights:labor_automation:001",
+  "artifact_ref": ".N/invoice_automation_system",
+  "claim": {
+    "claim_types": [
+      "original_creation",
+      "labor_automation",
+      "contribution_record",
+      "ai_assisted_work"
+    ],
+    "confidence": "verified",
+    "summary": "Worker created an automation system that reduced repetitive invoice-processing labor and improved reporting workflow efficiency.",
+    "limitations": "This record preserves contribution history, labor context, and negotiation posture. It does not automatically determine employment ownership rights.",
+    "legal_posture": "provenance_and_declaration_not_legal_determination"
+  },
+  "contributors": [
+    {
+      "contributor_id": "user:carl_sowers",
+      "type": "human",
+      "name": "Carl Sowers",
+      "roles": ["originator", "designer", "implementer"],
+      "contribution_summary": "Designed and implemented workflow automation for invoice and reporting tasks.",
+      "attribution_preference": "named"
+    },
+    {
+      "contributor_id": "tool:gpt",
+      "type": "ai_tool",
+      "name": "GPT",
+      "roles": ["assistant", "reviewer"],
+      "contribution_summary": "Used for workflow refinement, documentation support, and implementation assistance.",
+      "attribution_preference": "tool_disclosure"
+    }
+  ],
+  "provenance": {
+    "created_at": "2026-05-11T18:00:00Z",
+    "created_at_precision": "exact",
+    "creation_context": "Administrative workflow optimization and automation design.",
+    "platform_or_tool": "Local tooling + AI-assisted workflow iteration",
+    "source_materials": [
+      {
+        "ref": "internal_invoice_workflow_v3",
+        "description": "Existing invoice-processing workflow targeted for optimization.",
+        "visibility": "restricted"
+      }
+    ],
+    "related_artifacts": [],
+    "derivative_links": [],
+    "prior_art_refs": []
+  },
+  "ai_assistance": {
+    "used": true,
+    "tools": [
+      {
+        "name": "GPT",
+        "provider": "OpenAI",
+        "model": null,
+        "role": "workflow refinement and documentation support"
+      }
+    ],
+    "role": "refinement",
+    "human_reviewed": true,
+    "prompt_refs": [],
+    "disclosure_note": "AI assistance used during iteration and documentation, with final human review and implementation control."
+  },
+  "labor_context": {
+    "created_during_employment": true,
+    "employer_or_client": "Example Corp",
+    "assigned_task_related": true,
+    "automates_assigned_task": true,
+    "estimated_hours_saved": 120,
+    "hours_saved_period": "monthly",
+    "value_claim_summary": "Automation reduced repetitive labor and increased reporting consistency.",
+    "recognition_or_compensation_sought": true,
+    "negotiation_preference": "creator seeks recognition and negotiable usage/compensation discussion",
+    "legal_status_note": "Employment-related ownership and compensation may depend on contracts and jurisdiction."
+  },
+  "sharing_intent": {
+    "attribution_required": true,
+    "open_source_compatible": true,
+    "commercial_negotiation_preferred": true,
+    "collaboration_welcome": true,
+    "license_mode": "negotiable",
+    "future_release_condition": "Potential open-source release after creator/employer negotiation and stabilization.",
+    "usage_notes": "The system is intended as a contribution and labor-value record, not a hostile ownership assertion."
+  },
+  "evidence": [
+    {
+      "type": "github_issue",
+      "ref": "issue:25",
+      "description": "RIGHTS_SCHEMA_v0.1 definition issue.",
+      "visibility": "public",
+      "confidence_weight": "high"
+    },
+    {
+      "type": "workbook_evidence_id",
+      "ref": "E-026",
+      "description": "Workbook evidence entry for schema workflow kickoff.",
+      "visibility": "public",
+      "confidence_weight": "high"
+    },
+    {
+      "type": "local_note",
+      "ref": "labor_savings_estimate_v1",
+      "description": "Internal estimate of time savings and process improvements.",
+      "visibility": "restricted",
+      "confidence_weight": "medium"
+    }
+  ],
+  "redaction": {
+    "public_fields": [
+      "claim",
+      "sharing_intent",
+      "contributors",
+      "labor_context.estimated_hours_saved"
+    ],
+    "private_fields": [
+      "source_materials",
+      "internal workflow references"
+    ],
+    "redacted_fields": [
+      "restricted business workflow details"
+    ],
+    "export_mode": "redacted",
+    "redaction_note": "Sensitive business information should remain redacted during public export."
+  },
+  "notes": [
+    "This example models labor-origin contribution and negotiation posture.",
+    "The record intentionally separates provenance evidence from automatic legal conclusions."
+  ]
+}
