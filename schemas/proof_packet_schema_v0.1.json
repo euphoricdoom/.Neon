@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://neon.local/schemas/proof_packet_schema_v0.1.json",
+  "title": "NeoN Proof Packet Schema v0.1",
+  "description": "Portable audit bundle structure for .NeoN artifacts. Proof packets are tamper-evident, inspectable, evidence-linked, redaction-aware, and honest about legal limits.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_id",
+    "packet_version",
+    "created_at",
+    "created_by",
+    "export_mode",
+    "packet_purpose",
+    "artifacts",
+    "rights_records",
+    "evidence",
+    "hashes",
+    "timeline",
+    "redaction",
+    "verifier",
+    "non_claims"
+  ],
+  "properties": {
+    "packet_id": { "type": "string", "minLength": 1 },
+    "packet_version": { "const": "0.1" },
+    "created_at": { "type": "string", "minLength": 1 },
+    "created_by": { "type": "string", "minLength": 1 },
+    "export_mode": { "type": "string", "enum": ["public", "private", "redacted", "proof_only", "internal"] },
+    "packet_purpose": { "type": "string", "minLength": 1 },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact" }
+    },
+    "rights_records": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/rights_record_ref" }
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidence" }
+    },
+    "hashes": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/hash_record" }
+    },
+    "timeline": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/timeline_event" }
+    },
+    "redaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["export_mode", "public_sections", "private_sections", "redacted_fields", "redaction_note"],
+      "properties": {
+        "export_mode": { "type": "string", "enum": ["public", "private", "redacted", "proof_only", "internal"] },
+        "public_sections": { "type": "array", "items": { "type": "string" } },
+        "private_sections": { "type": "array", "items": { "type": "string" } },
+        "redacted_fields": { "type": "array", "items": { "type": "string" } },
+        "sensitive_categories": { "type": "array", "items": { "type": "string" } },
+        "redaction_note": { "type": "string" }
+      }
+    },
+    "verifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "schema_valid", "hashes_valid", "confidence_summary", "warnings"],
+      "properties": {
+        "status": { "type": "string", "enum": ["verified", "verified_with_warnings", "unverified", "failed"] },
+        "schema_valid": { "type": "boolean" },
+        "hashes_valid": { "type": "boolean" },
+        "rights_schema_refs_valid": { "type": ["boolean", "null"] },
+        "confidence_summary": {
+          "type": "object",
+          "additionalProperties": { "type": "integer", "minimum": 0 }
+        },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "generated_at": { "type": ["string", "null"] },
+        "verifier_name": { "type": ["string", "null"] }
+      }
+    },
+    "non_claims": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+    "notes": { "type": "array", "items": { "type": "string" } }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifact_id", "artifact_type", "artifact_path", "artifact_hash", "visibility", "description"],
+      "properties": {
+        "artifact_id": { "type": "string", "minLength": 1 },
+        "artifact_type": { "type": "string", "minLength": 1 },
+        "artifact_path": { "type": "string", "minLength": 1 },
+        "artifact_hash": { "type": "string", "minLength": 1 },
+        "related_rights_record": { "type": ["string", "null"] },
+        "visibility": { "type": "string", "enum": ["public", "private", "redacted", "restricted"] },
+        "description": { "type": "string" }
+      }
+    },
+    "rights_record_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rights_record_id", "schema", "schema_version", "path_or_ref", "claim_confidence"],
+      "properties": {
+        "rights_record_id": { "type": "string", "minLength": 1 },
+        "schema": { "const": "neon.rights" },
+        "schema_version": { "const": "0.1" },
+        "path_or_ref": { "type": "string", "minLength": 1 },
+        "claim_confidence": { "type": "string", "enum": ["verified", "correlated", "asserted", "speculative", "derived"] }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidence_id", "type", "ref", "visibility", "confidence_weight", "description"],
+      "properties": {
+        "evidence_id": { "type": "string", "minLength": 1 },
+        "type": { "type": "string", "minLength": 1 },
+        "ref": { "type": "string", "minLength": 1 },
+        "visibility": { "type": "string", "enum": ["public", "private", "redacted", "restricted"] },
+        "confidence_weight": { "type": "string", "enum": ["low", "medium", "high"] },
+        "description": { "type": "string" }
+      }
+    },
+    "hash_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target", "algorithm", "hash", "created_at"],
+      "properties": {
+        "target": { "type": "string", "minLength": 1 },
+        "algorithm": { "type": "string", "enum": ["sha256", "sha512"] },
+        "hash": { "type": "string", "minLength": 1 },
+        "created_at": { "type": "string", "minLength": 1 }
+      }
+    },
+    "timeline_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["timestamp", "event_type", "description", "confidence"],
+      "properties": {
+        "timestamp": { "type": "string", "minLength": 1 },
+        "event_type": { "type": "string", "enum": ["created", "modified", "published", "shared", "derived", "merged", "exported", "verified"] },
+        "description": { "type": "string" },
+        "related_artifact": { "type": ["string", "null"] },
+        "related_evidence": { "type": ["string", "null"] },
+        "confidence": { "type": "string", "enum": ["verified", "correlated", "asserted", "speculative", "derived"] }
+      }
+    }
+  }
+}
