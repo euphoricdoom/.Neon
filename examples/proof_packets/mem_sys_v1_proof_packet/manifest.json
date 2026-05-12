@@ -1,0 +1,108 @@
+{
+  "packet_id": "packet:mem_sys_v1:001",
+  "packet_version": "0.1",
+  "created_at": "2026-05-12T01:15:00Z",
+  "created_by": "Carl Sowers",
+  "export_mode": "redacted",
+  "packet_purpose": "Portable provenance and conceptual contribution audit packet for mem_sys_v1.",
+  "artifacts": [
+    {
+      "artifact_id": ".N/mem_sys_v1",
+      "artifact_type": "concept_design",
+      "artifact_path": "rights/mem_sys_v1_claim.example.json",
+      "artifact_hash": "sha256:memsysplaceholderhash001",
+      "related_rights_record": "rights:mem_sys_v1:001",
+      "visibility": "redacted",
+      "description": "Conceptual memory-system contribution record."
+    }
+  ],
+  "rights_records": [
+    {
+      "rights_record_id": "rights:mem_sys_v1:001",
+      "schema": "neon.rights",
+      "schema_version": "0.1",
+      "path_or_ref": "rights/mem_sys_v1_claim.example.json",
+      "claim_confidence": "correlated"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "evidence:memsys:001",
+      "type": "conversation_export",
+      "ref": "conversation:2024-11:mem_sys_v1",
+      "visibility": "private",
+      "confidence_weight": "medium",
+      "description": "Conversation exports describing conceptual memory-system work."
+    },
+    {
+      "evidence_id": "evidence:memsys:002",
+      "type": "workbook_evidence_id",
+      "ref": "E-027",
+      "visibility": "public",
+      "confidence_weight": "high",
+      "description": "Workbook evidence entry for RIGHTS_SCHEMA merge milestone."
+    }
+  ],
+  "hashes": [
+    {
+      "target": "rights/mem_sys_v1_claim.example.json",
+      "algorithm": "sha256",
+      "hash": "sha256:memsysplaceholderhash001",
+      "created_at": "2026-05-12T01:15:00Z"
+    }
+  ],
+  "timeline": [
+    {
+      "timestamp": "2024-11",
+      "event_type": "created",
+      "description": "Initial conversational memory-system concept work.",
+      "related_artifact": ".N/mem_sys_v1",
+      "related_evidence": "evidence:memsys:001",
+      "confidence": "correlated"
+    },
+    {
+      "timestamp": "2026-05-11",
+      "event_type": "merged",
+      "description": "RIGHTS_SCHEMA_v0.1 merged into .Neon repository.",
+      "related_artifact": ".N/mem_sys_v1",
+      "related_evidence": "evidence:memsys:002",
+      "confidence": "verified"
+    }
+  ],
+  "redaction": {
+    "export_mode": "redacted",
+    "public_sections": ["manifest", "timeline", "rights_summary"],
+    "private_sections": ["conversation_exports"],
+    "redacted_fields": ["raw conversation content"],
+    "sensitive_categories": ["private_conversation_history"],
+    "redaction_note": "Conversation contents omitted from public export while preserving provenance continuity."
+  },
+  "verifier": {
+    "status": "verified_with_warnings",
+    "schema_valid": true,
+    "hashes_valid": true,
+    "rights_schema_refs_valid": true,
+    "confidence_summary": {
+      "verified": 1,
+      "correlated": 1,
+      "asserted": 0,
+      "speculative": 0,
+      "derived": 0
+    },
+    "warnings": [
+      "Packet contains correlated conceptual similarity claims that are not independently verified appropriation findings.",
+      "Conversation evidence is partially redacted."
+    ],
+    "generated_at": "2026-05-12T01:15:00Z",
+    "verifier_name": "neon.verify.v0"
+  },
+  "non_claims": [
+    "This packet does not guarantee legal ownership.",
+    "This packet does not prove appropriation or theft.",
+    "This packet preserves provenance continuity and contribution evidence."
+  ],
+  "notes": [
+    "Packet intentionally preserves uncertainty boundaries.",
+    "Correlated conceptual overlap is not treated as verified misconduct."
+  ]
+}
