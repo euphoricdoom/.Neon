@@ -27,6 +27,7 @@ from neon.commands.core import (
 )
 from neon.lifecycle import make_artifact
 from neon.origin_gate import resolve_execution_decision, write_override_packet
+from neon.suntan_import import import_suntan_origin_claim
 from neon.symbols import SYMBOLS, symbolic_state
 
 
@@ -39,6 +40,14 @@ def cmd_symbolic_status(args: argparse.Namespace) -> None:
     print("✓ λ.symbolic-helpers")
     print("◐ λ.modular-decomposition")
     print("◐ λ.golden-freeze")
+
+
+def cmd_import_suntan(args: argparse.Namespace) -> None:
+    try:
+        imported = import_suntan_origin_claim(args.claim, out_dir=args.out_dir)
+    except ValueError as exc:
+        raise SystemExit(str(exc)) from exc
+    print(f"imported Sun_Tan claim: {imported}")
 
 
 def cmd_origin_check(args: argparse.Namespace) -> None:
@@ -115,6 +124,11 @@ def build_parser() -> argparse.ArgumentParser:
     add_artifact_arg(sub, "store", cmd_store)
     add_artifact_arg(sub, "export", cmd_export)
     add_artifact_arg(sub, "log", cmd_log)
+
+    p = sub.add_parser("import-suntan")
+    p.add_argument("claim")
+    p.add_argument("--out-dir")
+    p.set_defaults(func=cmd_import_suntan)
 
     p = sub.add_parser("verify")
     p.add_argument("target")
