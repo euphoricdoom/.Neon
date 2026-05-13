@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 
 from neon.artifact import canonical_bytes, read_json, validate_artifact
 from neon.cas import sha256_bytes
@@ -25,6 +26,7 @@ from neon.commands.core import (
     cmd_verify,
 )
 from neon.lifecycle import make_artifact
+from neon.origin_gate import resolve_execution_decision, write_override_packet
 from neon.symbols import SYMBOLS, symbolic_state
 
 
@@ -37,6 +39,40 @@ def cmd_symbolic_status(args: argparse.Namespace) -> None:
     print("✓ λ.symbolic-helpers")
     print("◐ λ.modular-decomposition")
     print("◐ λ.golden-freeze")
+
+
+def cmd_origin_check(args: argparse.Namespace) -> None:
+    result = resolve_execution_decision(args.artifact, action=args.action)
+    if args.format == "json":
+        print(json.dumps(result.to_dict(), indent=2))
+        return
+    print(f"artifact_ref: {result.artifact_ref}")
+    print(f"origin_state: {result.origin_state}")
+    print(f"execution_decision: {result.execution_decision}")
+    print(f"trusted_origin: {str(result.trusted_origin).lower()}")
+    print(f"evidence_score: {result.evidence_score}")
+    if result.required_next_actions:
+        print("required_next_actions: " + ", ".join(result.required_next_actions))
+
+
+def cmd_origin_override(args: argparse.Namespace) -> None:
+    result = resolve_execution_decision(
+        args.artifact,
+        action=args.action,
+        override_mode=args.mode,
+        override_reason=args.reason,
+    )
+    packet = write_override_packet(result, root=args.root)
+    if args.format == "json":
+        data = result.to_dict()
+        data["override"]["packet_path"] = str(packet)
+        print(json.dumps(data, indent=2))
+        return
+    print(f"artifact_ref: {result.artifact_ref}")
+    print(f"origin_state: {result.origin_state}")
+    print(f"execution_decision: {result.execution_decision}")
+    print(f"trusted_origin: {str(result.trusted_origin).lower()}")
+    print(f"override_packet: {packet}")
 
 
 def add_artifact_arg(subparsers: argparse._SubParsersAction, name: str, func) -> None:
@@ -111,6 +147,24 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--root", default=".")
     p.add_argument("--format", choices=["text", "json"], default="text")
     p.set_defaults(func=cmd_metrics)
+
+    p = sub.add_parser("origin")
+    origin_sub = p.add_subparsers(required=True)
+
+    p_check = origin_sub.add_parser("check")
+    p_check.add_argument("artifact")
+    p_check.add_argument("--action", default="run")
+    p_check.add_argument("--format", choices=["text", "json"], default="text")
+    p_check.set_defaults(func=cmd_origin_check)
+
+    p_override = origin_sub.add_parser("override")
+    p_override.add_argument("artifact")
+    p_override.add_argument("--mode", default="creator-local", choices=["creator-local"])
+    p_override.add_argument("--reason", required=True)
+    p_override.add_argument("--action", default="run")
+    p_override.add_argument("--root", default=".")
+    p_override.add_argument("--format", choices=["text", "json"], default="text")
+    p_override.set_defaults(func=cmd_origin_override)
 
     p = sub.add_parser("list")
     p.set_defaults(func=cmd_list)
