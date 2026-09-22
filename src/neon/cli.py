@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from pathlib import Path
 
 from neon.artifact import canonical_bytes, read_json, validate_artifact
 from neon.cas import sha256_bytes
@@ -26,9 +27,23 @@ from neon.commands.core import (
     cmd_verify,
 )
 from neon.lifecycle import make_artifact
+from neon.graph_integrity import validate_graph
 from neon.origin_gate import resolve_execution_decision, write_override_packet
 from neon.suntan_import import import_suntan_origin_claim
 from neon.symbols import SYMBOLS, symbolic_state
+
+
+def cmd_graph_check(args: argparse.Namespace) -> None:
+    result=validate_graph(Path(args.root))
+    if args.format=="json":
+        print(json.dumps(result.to_dict(),indent=2))
+    else:
+        print("VALID" if result.valid else "INVALID")
+        print(f"artifacts {result.artifact_count}")
+        for x in result.missing_parents: print(f"missing-parent {x['artifact_id']} -> {x['missing_parent']}")
+        for x in result.cycles: print("cycle "+" -> ".join(x))
+        for x in result.duplicate_ids: print(f"duplicate-id {x['artifact_id']}")
+    if not result.valid: raise SystemExit(1)
 
 
 def cmd_symbolic_status(args: argparse.Namespace) -> None:
@@ -179,6 +194,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_override.add_argument("--root", default=".")
     p_override.add_argument("--format", choices=["text", "json"], default="text")
     p_override.set_defaults(func=cmd_origin_override)
+
+    p = sub.add_parser("graph-check")
+    p.add_argument("--root",default=".")
+    p.add_argument("--format",choices=["text","json"],default="text")
+    p.set_defaults(func=cmd_graph_check)
 
     p = sub.add_parser("list")
     p.set_defaults(func=cmd_list)
