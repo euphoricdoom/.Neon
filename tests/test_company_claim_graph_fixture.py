@@ -48,9 +48,11 @@ def test_company_claim_graph_missing_parent_fails_native_neon(tmp_path):
 
 def test_company_claim_graph_cycle_fails_native_neon(tmp_path):
     build_serval_fixture(tmp_path)
+    # prospect claim already points to Gmail observation; point Gmail back to
+    # that claim to create an actual two-node cycle.
     p=tmp_path/"gmail.neon"
     d=json.loads(p.read_text())
-    d["lineage"]["parents"]=[".N/claim/serval-ack-v2"]
+    d["lineage"]["parents"]=[".N/claim/serval-ack"]
     p.write_text(json.dumps(d))
     r=validate_graph(tmp_path)
     assert not r.valid
